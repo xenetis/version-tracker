@@ -1,0 +1,5 @@
+tools:
+  Grafana:
+    name: "Grafana Demo"
+    type: "grafana"
+    endpoint: "https://play.grafana.org"

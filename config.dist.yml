@@ -1,0 +1,43 @@
+tools:
+  Cadvisor:
+    name: "Cadvisor"
+    type: "cadvisor"
+    endpoint: "https://cadvisor.example.com"
+  Gitlab-ce:
+    name: "Gitlab Community"
+    type: "gitlab-ce"
+    endpoint: "http://gitlab-ce.example.com"
+    headers:
+      Private-Token: "oBNyxu2hw9TCVk39LYX8"
+  Gitlab-ee:
+    name: "Gitlab Enterprise"
+    type: "gitlab-ee"
+    endpoint: "http://gitlab-ee.example.com"
+    headers:
+      Private-Token: "9TCVk3oBNyxu2hw9LYX8"
+  Glpi:
+    name: "Glpi"
+    type: "glpi"
+    endpoint: "https://glpi.example.com"
+    headers:
+      Authorization: "user_token: n5JyTGkXqTUBxlOykCO9SfqV0lZIffoFKgdBujI2"
+      App-Token: "W11fkaVWVBffhUS1uszBPHD6dZxCYMWorqFVSiQX"
+  Grafana:
+    name: "Grafana"
+    type: "grafana"
+    endpoint: "https://grafana.example.com"
+  Node_exporter:
+    name: "Node Exporter"
+    type: "node_exporter"
+    endpoint: "https://node-exporter.example.com"
+  Prometheus:
+    name: "Prometheus"
+    type: "prometheus"
+    endpoint: "https://prometheus.example.com"
+    headers:
+      Authorization: "Basic am9obkBleGFtcGxlLmNvbTphYmMxMjM="
+  Matomo:
+    name: "Matomo"
+    type: "matomo"
+    endpoint: "https://matomo.example.com"
+    token: "435c9cb65313227916daf23527078c6b"

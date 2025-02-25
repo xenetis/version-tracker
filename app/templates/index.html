@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="author" content="https://github.com/xenetis" />
+    <meta name="keywords" content="Version Tracker, Python, Flask" />
+    <meta name="description" content="Python Flask project checking version of your services and check online if new version is available." />
+
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+
+    <title>Version Tracker</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        h1, h2 { text-align: center; }
+
+        h1 > img {width: 35px; vertical-align: text-bottom;}
+        table { max-width: 80%; border-collapse: collapse; margin: 20px auto; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; min-width: 180px; }
+        th { background-color: #f4f4f4; }
+        .up-to-date { color: green; font-weight: bold; }
+        .update-available { color: red; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1><img src="static/logo.png"> VERSION TRACKER </h1>
+    <h2>État des versions des services</h2>
+    <table border="1">
+        <tr>
+            <th>Service</th>
+            <th>Version actuelle</th>
+            <th>Dernière version</th>
+            <th>Statut</th>
+        </tr>
+        {% for tool, data in versions.items() %}
+            <tr>
+                <td><a href="{{ data.endpoint }}" target="_blank">{{ tool }}</a></td>
+                <td>{{ data.current }}</td>
+                <td>{{ data.latest }}</td>
+                <td class="{% if data.uptodate == True %}up-to-date{% else %}update-available{% endif %}">
+                    {{ data.status }}
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
