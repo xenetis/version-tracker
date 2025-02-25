@@ -6,5 +6,6 @@ COPY requirements.txt requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY ./app .
+COPY ./config.yml ./app/config.yml
 
 CMD ["python", "app.py"]

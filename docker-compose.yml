@@ -1,11 +1,18 @@
-version: '3.8'
-
 services:
-  version-tracker:
+  version-tracker-development:
     build: .
-    container_name: version-tracker
+    container_name: version-tracker-development
     ports:
       - "5556:5000"
+    volumes:
+      - ./config.yml:/app/config.yml:ro
+    restart: unless-stopped
+
+  version-tracker-latest:
+    image: xenetis/version-tracker:latest
+    container_name: version-tracker-latest
+    ports:
+      - "5557:5000"
     volumes:
       - ./config.yml:/app/config.yml:ro
     restart: unless-stopped

@@ -105,6 +105,9 @@ tools:
 ## 🗃 Versions
 
 ---
+### v0.1.1
+
+- Add default config.yml in Docker Build
 
 ### v0.1.0
 
