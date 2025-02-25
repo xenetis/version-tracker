@@ -22,10 +22,10 @@ jobs:
         docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
     - name: Build the Docker image
       run: |
-        docker build . --file Dockerfile --tag xenetis/version-tracer:$(grep VERSION .env  | sed -e 's/.*=//')
+        docker build . --file Dockerfile --tag xenetis/version-tracker:$(grep VERSION .env  | sed -e 's/.*=//')
 
     - name: Docker Push
       run: | 
-        docker tag ${{secrets.DOCKER_USER}}/version-tracer:$(grep VERSION .env  | sed -e 's/.*=//') ${{secrets.DOCKER_USER}}/version-tracer:latest
-        docker push ${{secrets.DOCKER_USER}}/version-tracer:$(grep VERSION .env  | sed -e 's/.*=//')
-        docker push ${{secrets.DOCKER_USER}}/version-tracer:latest
+        docker tag ${{secrets.DOCKER_USER}}/version-tracker:$(grep VERSION .env  | sed -e 's/.*=//') ${{secrets.DOCKER_USER}}/version-tracker:latest
+        docker push ${{secrets.DOCKER_USER}}/version-tracker:$(grep VERSION .env  | sed -e 's/.*=//')
+        docker push ${{secrets.DOCKER_USER}}/version-tracker:latest
