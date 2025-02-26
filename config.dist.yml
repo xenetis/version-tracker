@@ -3,15 +3,15 @@ tools:
     name: "Cadvisor"
     type: "cadvisor"
     endpoint: "https://cadvisor.example.com"
-  Gitlab-ce:
+  GitlabCe:
     name: "Gitlab Community"
-    type: "gitlab-ce"
+    type: "gitlab_ce"
     endpoint: "http://gitlab-ce.example.com"
     headers:
       Private-Token: "oBNyxu2hw9TCVk39LYX8"
-  Gitlab-ee:
+  GitlabEe:
     name: "Gitlab Enterprise"
-    type: "gitlab-ee"
+    type: "gitlab_ee"
     endpoint: "http://gitlab-ee.example.com"
     headers:
       Private-Token: "9TCVk3oBNyxu2hw9LYX8"
@@ -40,4 +40,5 @@ tools:
     name: "Matomo"
     type: "matomo"
     endpoint: "https://matomo.example.com"
-    token: "435c9cb65313227916daf23527078c6b"
+    headers:
+      token: "435c9cb65313227916daf23527078c6b"

@@ -1,29 +1,32 @@
 import requests
-from plugins.abstract import normalize_version
+from .abstract import AbstractPlugin
 
-GLPI_LATEST_URL = "https://api.github.com/repos/glpi-project/glpi/releases/latest"
-GLPI_API_INIT_ENDPOINT = "/apirest.php/initSession"
-GLPI_API_ENDPOINT = "/apirest.php/getGlpiConfig"
+class GlpiPlugin(AbstractPlugin):
+    def __init__(self, endpoint, headers, **kwargs):
+        super().__init__(endpoint=endpoint, headers=headers)
 
-def get_versions(endpoint, headers={}):
-    try:
-        headers["Content-Type"] = "application/json"
-        response = requests.get(endpoint + GLPI_API_INIT_ENDPOINT, headers=headers, timeout=5)
-        response.raise_for_status()
-        session_token = response.json().get("session_token")
-        headers["Session-Token"] = session_token
+    GLPI_LATEST_URL = "https://api.github.com/repos/glpi-project/glpi/releases/latest"
+    GLPI_API_INIT_ENDPOINT = "/apirest.php/initSession"
+    GLPI_API_ENDPOINT = "/apirest.php/getGlpiConfig"
 
-        response = requests.get(endpoint + GLPI_API_ENDPOINT, headers=headers, timeout=5)
-        response.raise_for_status()
-        current_version = response.json().get("cfg_glpi").get("version", None)
-    except requests.RequestException as e:
-        current_version = f"Erreur: Impossible de récupérer la version installée ({e})"
+    def get_current_version(self):
+        try:
+            self.headers["Content-Type"] = "application/json"
+            response = requests.get(self.endpoint + self.GLPI_API_INIT_ENDPOINT, headers=self.headers, timeout=5)
+            response.raise_for_status()
+            session_token = response.json().get("session_token")
+            self.headers["Session-Token"] = session_token
 
-    try:
-        response = requests.get(GLPI_LATEST_URL, timeout=5)
-        response.raise_for_status()
-        latest_version = normalize_version(response.json().get("tag_name", "Erreur: Clé 'tag_name' introuvable"))
-    except requests.RequestException as e:
-        latest_version = f"Erreur: Impossible de récupérer la dernière version ({e})"
+            response = requests.get(self.endpoint + self.GLPI_API_ENDPOINT, headers=self.headers, timeout=5)
+            response.raise_for_status()
+            return response.json().get("cfg_glpi").get("version", None)
+        except requests.RequestException as e:
+            return f"Erreur: Impossible de récupérer la version installée ({e})"
 
-    return current_version, latest_version
+    def get_latest_version(self):
+        try:
+            response = requests.get(self.GLPI_LATEST_URL, timeout=5)
+            response.raise_for_status()
+            return self.normalize_version(response.json().get("tag_name", "Erreur: Clé 'tag_name' introuvable"))
+        except requests.RequestException as e:
+            return f"Erreur: Impossible de récupérer la dernière version ({e})"

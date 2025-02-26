@@ -52,7 +52,7 @@ python3 app/app.py
 
 ---
 
-Create your **config.yml** like this: 
+Create your **config.yml** by taking tools needed in this list : 
 
 ````yaml
 tools:
@@ -60,15 +60,15 @@ tools:
     name: "Cadvisor"
     type: "cadvisor"
     endpoint: "https://cadvisor.example.com"
-  Gitlab-ce:
+  Gitlabce:
     name: "Gitlab Community"
-    type: "gitlab-ce"
+    type: "gitlab_ce"
     endpoint: "http://gitlab-ce.example.com"
     headers:
       Private-Token: "oBNyxu2hw9TCVk39LYX8"
-  Gitlab-ee:
+  Gitlabee:
     name: "Gitlab Enterprise"
-    type: "gitlab-ee"
+    type: "gitlab_ee"
     endpoint: "http://gitlab-ee.example.com"
     headers:
       Private-Token: "9TCVk3oBNyxu2hw9LYX8"
@@ -97,7 +97,8 @@ tools:
     name: "Matomo"
     type: "matomo"
     endpoint: "https://matomo.example.com"
-    token: "435c9cb65313227916daf23527078c6b"
+    headers:
+      token: "435c9cb65313227916daf23527078c6b"
 ````
 
 
@@ -105,6 +106,11 @@ tools:
 ## 🗃 Versions
 
 ---
+
+### v0.2.0
+
+- Refactor plugins structure: plugin class and abstract class inheritance
+
 ### v0.1.1
 
 - Add default config.yml in Docker Build
@@ -117,8 +123,8 @@ tools:
 - Docker build
 - Docker-compose
 - Cadvisor Plugin
-- Gitlab-ce Plugin
-- Gitlab-ee Plugin
+- Gitlab CE Plugin
+- Gitlab EE Plugin
 - Glpi Plugin
 - Grafana Plugin
 - Matomo Plugin
@@ -131,7 +137,6 @@ tools:
 ---
 
 - Add more plugins
-- Refactor plugins structure
 - Add Jquery Ajax 
 - Add datatables
 - Group tools
