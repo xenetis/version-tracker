@@ -1,5 +1,5 @@
 import requests
-from .abstract import AbstractPlugin
+from .abstract import AbstractPlugin, latest_version_cache
 
 class GlpiPlugin(AbstractPlugin):
     def __init__(self, endpoint, headers, **kwargs):
@@ -24,9 +24,13 @@ class GlpiPlugin(AbstractPlugin):
             return f"Erreur: Impossible de récupérer la version installée ({e})"
 
     def get_latest_version(self):
+        if "glpi" in latest_version_cache:
+            return latest_version_cache["glpi"]
         try:
             response = requests.get(self.GLPI_LATEST_URL, timeout=5)
             response.raise_for_status()
-            return self.normalize_version(response.json().get("tag_name", "Erreur: Clé 'tag_name' introuvable"))
+            latest_version = self.normalize_version(response.json().get("tag_name", "Inconnu"))
+            if latest_version != "Inconnu": latest_version_cache["glpi"] = latest_version
+            return latest_version
         except requests.RequestException as e:
             return f"Erreur: Impossible de récupérer la dernière version ({e})"

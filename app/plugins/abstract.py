@@ -1,7 +1,10 @@
 from abc import ABC, abstractmethod
+from cachetools import TTLCache
 import requests
 import re
 import logging
+
+latest_version_cache = TTLCache(maxsize=100, ttl=3600)
 
 class AbstractPlugin(ABC):
 

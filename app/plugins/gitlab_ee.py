@@ -1,5 +1,5 @@
 import requests
-from .abstract import AbstractPlugin
+from .abstract import AbstractPlugin, latest_version_cache
 
 class Gitlab_eePlugin(AbstractPlugin):
     def __init__(self, endpoint, headers, **kwargs):
@@ -16,8 +16,12 @@ class Gitlab_eePlugin(AbstractPlugin):
             return f"Erreur: Impossible de récupérer les métriques ({e})", "Erreur"
 
     def get_latest_version(self):
+        if "gitlab_ee" in latest_version_cache:
+            return latest_version_cache["gitlab_ee"]
         try:
             data = self.fetch_version(self.GITLAB_LATEST_URL)
-            return self.normalize_version(data[0].get("name", "Inconnu")) if data else "Erreur"
+            latest_version = self.normalize_version(data[0].get("name", "Inconnu")) if data else "Erreur"
+            if latest_version not in ["Inconnu", "Erreur"]: latest_version_cache["gitlab_ee"] = latest_version
+            return latest_version
         except requests.RequestException as e:
             return f"Erreur: Impossible de récupérer les métriques ({e})", "Erreur"

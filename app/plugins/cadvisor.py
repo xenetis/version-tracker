@@ -1,6 +1,6 @@
 import re
 import requests
-from .abstract import AbstractPlugin
+from .abstract import AbstractPlugin, latest_version_cache
 
 class CadvisorPlugin(AbstractPlugin):
     def __init__(self, endpoint, headers, **kwargs):
@@ -27,9 +27,15 @@ class CadvisorPlugin(AbstractPlugin):
         return current_version
 
     def get_latest_version(self):
-        data = self.fetch_version(self.NODE_EXPORTER_LATEST_URL)
-        if data and isinstance(data, dict):
-            latest_version = self.normalize_version(data.get("tag_name", "Inconnu"))  # Dernier tag de version
-        else:
-            latest_version = "Erreur"
-        return latest_version
+        if "cadvisor" in latest_version_cache:
+            return latest_version_cache["cadvisor"]
+        try:
+            data = self.fetch_version(self.NODE_EXPORTER_LATEST_URL)
+            if data and isinstance(data, dict):
+                latest_version = self.normalize_version(data.get("tag_name", "Inconnu"))
+            else:
+                latest_version = "Erreur"
+            if latest_version not in ["Inconnu", "Erreur"]: latest_version_cache["cadvisor"] = latest_version
+            return latest_version
+        except requests.RequestException as e:
+            return f"Erreur: Impossible de récupérer les métriques ({e})", "Erreur"

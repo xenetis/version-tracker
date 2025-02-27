@@ -1,5 +1,5 @@
 import requests
-from .abstract import AbstractPlugin
+from .abstract import AbstractPlugin, latest_version_cache
 
 class MatomoPlugin(AbstractPlugin):
     def __init__(self, endpoint, headers):
@@ -18,9 +18,13 @@ class MatomoPlugin(AbstractPlugin):
             return f"Erreur: Impossible de récupérer la version installée ({e})"
 
     def get_latest_version(self):
+        if "matomo" in latest_version_cache:
+            return latest_version_cache["matomo"]
         try:
             response = requests.get(self.MATOMO_LATEST_URL, timeout=5)
             response.raise_for_status()
-            return self.normalize_version(response.text.strip())
+            latest_version = self.normalize_version(response.text.strip())
+            latest_version_cache["matomo"] = latest_version
+            return latest_version
         except requests.RequestException as e:
             return f"Erreur: Impossible de récupérer la dernière version ({e})"

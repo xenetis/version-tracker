@@ -30,7 +30,6 @@ services:
       - ./config.yml:/app/config.yml:ro
 ````
 
-@todo
 
 Or find it here: https://github.com/xenetis/docker-compose-examples/tree/main/version-tracker
 
@@ -107,6 +106,12 @@ tools:
 
 ---
 
+### v0.2.1
+
+- Cache save for latest version: 
+  - don't check the latest version at any time, only one time per hour
+  - Better for don't reach to the github API ratelimit
+
 ### v0.2.0
 
 - Refactor plugins structure: plugin class and abstract class inheritance
@@ -140,7 +145,6 @@ tools:
 - Add Jquery Ajax 
 - Add datatables
 - Group tools
-- Cache save for latest version
 - Multiple language
 
 
@@ -149,4 +153,5 @@ tools:
 ---
 
 - [Flask](https://palletsprojects.com/p/flask/)
+- [PyYAML](https://pyyaml.org/)
 - [Docker](https://www.docker.com/)

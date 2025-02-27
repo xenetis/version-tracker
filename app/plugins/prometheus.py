@@ -1,5 +1,5 @@
 import requests
-from .abstract import AbstractPlugin
+from .abstract import AbstractPlugin, latest_version_cache
 
 class PrometheusPlugin(AbstractPlugin):
     def __init__(self, endpoint, headers):
@@ -16,8 +16,12 @@ class PrometheusPlugin(AbstractPlugin):
             return f"Erreur: Impossible de récupérer la version installée ({e})"
 
     def get_latest_version(self):
+        if "prometheus" in latest_version_cache:
+            return latest_version_cache["prometheus"]
         try:
             data = self.fetch_version(self.PROMETHEUS_LATEST_URL)
-            return self.normalize_version(data.get("tag_name", "Inconnu")) if data else "Erreur"
+            latest_version = self.normalize_version(data.get("tag_name", "Inconnu")) if data else "Erreur"
+            if latest_version not in ["Inconnu", "Erreur"]: latest_version_cache["prometheus"] = latest_version
+            return latest_version
         except requests.RequestException as e:
             return f"Erreur: Impossible de récupérer la dernière version ({e})"
