@@ -60,6 +60,13 @@ tools:
     name: "Cadvisor"
     type: "cadvisor"
     endpoint: "https://cadvisor.example.com"
+  Dolibarr:
+    name: "Dolibarr Prod"
+    type: "dolibarr"
+    endpoint: "https://dolibarr.example.com"
+    headers:
+      login: "login"
+      password: "password"
   Gitlabce:
     name: "Gitlab Community"
     type: "gitlab_ce"
@@ -106,6 +113,10 @@ tools:
 ## 🗃 Versions
 
 ---
+
+### v0.2.3
+
+- Add Dolibarr plugin
 
 ### v0.2.2
 
