@@ -10,26 +10,40 @@
 
     <title>Version Tracker</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
+        body { font-family: Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif; margin: 20px; }
         h1, h2 { text-align: center; }
 
-        h1 > img {width: 35px; vertical-align: text-bottom;}
+        h1 > img { width: 35px; vertical-align: text-bottom; }
         table { max-width: 80%; border-collapse: collapse; margin: 20px auto; }
         th, td { border: 1px solid #ddd; padding: 10px; text-align: left; min-width: 180px; }
         th { background-color: #f4f4f4; }
         .up-to-date { color: green; font-weight: bold; }
         .update-available { color: red; font-weight: bold; }
+        #language-container { position: absolute; top: 30px; right: 30px; }
     </style>
+    <script>
+        function changeLanguage() {
+            var lang = document.getElementById("language").value;
+            window.location.search = "?lang=" + lang;
+        }
+    </script>
 </head>
 <body>
+    <div id="language-container">
+        <label for="language">{{ translations.choose_language }} :</label>
+        <select id="language" onchange="changeLanguage()">
+            <option value="fr" {% if lang == 'fr' %}selected{% endif %}>Français</option>
+            <option value="en" {% if lang == 'en' %}selected{% endif %}>English</option>
+        </select>
+    </div>
     <h1><img src="static/logo.png"> VERSION TRACKER </h1>
-    <h2>État des versions des services</h2>
+    <h2>{{ translations.title }}</h2>
     <table border="1">
         <tr>
-            <th>Service</th>
-            <th>Version actuelle</th>
-            <th>Dernière version</th>
-            <th>Statut</th>
+            <th>{{ translations.services }}</th>
+            <th>{{ translations.actual_versions }}</th>
+            <th>{{ translations.last_versions }}</th>
+            <th>{{ translations.status }}</th>
         </tr>
         {% for tool, data in versions.items() %}
             <tr>

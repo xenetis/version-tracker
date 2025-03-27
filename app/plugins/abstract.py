@@ -8,9 +8,10 @@ latest_version_cache = TTLCache(maxsize=100, ttl=3600)
 
 class AbstractPlugin(ABC):
 
-    def __init__(self, endpoint, headers={}):
+    def __init__(self, endpoint, headers={}, translations={}):
         self.endpoint = endpoint
         self.headers = headers
+        self.translations = translations
 
     @abstractmethod
     def get_current_version(self):
@@ -26,7 +27,7 @@ class AbstractPlugin(ABC):
             response.raise_for_status()
             return response.json()
         except requests.RequestException as e:
-            print(f"Erreur lors de la récupération des données depuis {url}: {e}")
+            print(f"Error retrieving data from {url}: {e}")
             return None
 
     def normalize_version(self, version):
@@ -41,7 +42,7 @@ class AbstractPlugin(ABC):
             response.raise_for_status()
             return response.json()
         except requests.RequestException as e:
-            logging.error(f"Erreur lors de la récupération depuis {url}: {e}")
+            logging.error(f"Error retrieving data from {url}: {e}")
             return None
 
     def get_versions(self):

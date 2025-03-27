@@ -1,12 +1,13 @@
 import os
 import importlib
-from flask import Flask, render_template, send_from_directory
-import requests
-import inspect
+from flask import Flask, request, make_response, render_template, send_from_directory
 import yaml
 import logging
 from cachetools import TTLCache
 from packaging.version import parse
+
+from locales.translator import Translator
+
 app = Flask(__name__)
 
 cache = TTLCache(maxsize=100, ttl=3600)
@@ -19,39 +20,13 @@ def load_config():
         return yaml.safe_load(file)
 
 
-# def fetch_latest_versions(tools):
-#     versions = {}
-#     for tool, data in tools.items():
-#         if tool in cache:
-#             versions[tool] = cache[tool]
-#             continue
-#
-#         try:
-#             response = requests.get(data['url'], timeout=5)
-#             response.raise_for_status()
-#             data_json = response.json()
-#
-#             if isinstance(data_json, list):  # Cas GitLab
-#                 latest_version = data_json[0].get("tag_name", "Unknown")
-#             elif isinstance(data_json, dict):  # Cas GitHub
-#                 latest_version = data_json.get("tag_name", "Unknown")
-#             else:
-#                 latest_version = "Unsupported API format"
-#
-#             versions[tool] = latest_version
-#             cache[tool] = latest_version  # Mise en cache de la version
-#         except requests.RequestException as e:
-#             logging.error(f"Erreur lors de la récupération de {tool}: {e}")
-#             versions[tool] = "Erreur: Impossible de récupérer la version"
-#     return versions
-
-def load_plugin(plugin_name, endpoint, headers):
+def load_plugin(plugin_name, endpoint, headers, translations):
     try:
         module = importlib.import_module(f"plugins.{plugin_name}")
         plugin_class = getattr(module, f"{plugin_name.capitalize()}Plugin")
-        return plugin_class(endpoint, headers)
+        return plugin_class(endpoint, headers, translations)
     except (ModuleNotFoundError, AttributeError) as e:
-        print(f"Erreur lors du chargement du plugin {plugin_name}: {e}")
+        print(f"Error loading plugin {plugin_name}: {e}")
         return None
 
 
@@ -70,22 +45,26 @@ def compare_versions(current_version, latest_version):
         return True
 
 
-def fetch_versions(tools):
+def fetch_versions(tools, translations):
     versions = {}
     for tool, data in tools.items():
         endpoint = data["endpoint"]
         headers = data.get("headers", {})
 
-        plugin = load_plugin(data["type"], endpoint, headers)
+        plugin = load_plugin(data["type"], endpoint, headers, translations)
 
         try:
-            current_version, latest_version = plugin.get_versions()
+            # current_version, latest_version = plugin.get_versions()
+            current_version = plugin.get_current_version()
+            latest_version = plugin.get_latest_version()
             uptodate = compare_versions(current_version, latest_version)
 
-            status = "À jour" if uptodate else "Mise à jour disponible"
+            status = translations.get("uptodate") if uptodate else translations.get("update_available")
         except Exception as e:
-            logging.error(f"Erreur dans {tool}: {e}")
-            current_version, latest_version, status, uptodate = "Erreur", "Erreur", "Inconnu", False
+            logging.error(f"Error in {tool}: {e}")
+            status = translations.get("unknown")
+            uptodate = False
+            # current_version, latest_version, status, uptodate = translations.get("error"), translations.get("error"), translations.get("unknown"), False
 
         versions[data["name"]] = {
             "endpoint": endpoint,
@@ -101,8 +80,19 @@ def fetch_versions(tools):
 def index():
     config = load_config()
     tools = config.get("tools", {})
-    versions = fetch_versions(tools)
-    return render_template("index.html", versions=versions)
+
+    translator = Translator()
+    lang = translator.detect_language()
+    translations = translator.load_translations()
+
+    versions = fetch_versions(tools, translations)
+
+    response = make_response(render_template("index.html", versions=versions, translations=translations, lang=lang))
+
+    if request.args.get("lang"):
+        response.set_cookie("lang", request.args.get("lang"), max_age=30*24*60*60)
+
+    return response
 
 
 @app.route('/favicon.ico')

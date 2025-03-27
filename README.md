@@ -4,6 +4,7 @@
 
 **Version-Tracker** is a Python Flask project checking version of your services and check online if new version is available. 
 
+![Version-Tracker-Screenshot](/app/static/screenshot.png "Version Tracker Screenshot")
 ## 🪪 Access
 
 ---
@@ -18,7 +19,7 @@
 ````yaml
 version: "3.5"
 services:
-  webnmap:
+  version-tracker:
     image: xenetis/version-tracker:latest
     container_name: version-tracker
     restart: unless-stopped
@@ -106,6 +107,11 @@ tools:
 
 ---
 
+### v0.2.2
+
+- Add screenshot in Readme
+- Multiple language (FR & EN done)
+
 ### v0.2.1
 
 - Cache save for latest version: 
@@ -145,7 +151,6 @@ tools:
 - Add Jquery Ajax 
 - Add datatables
 - Group tools
-- Multiple language
 
 
 ## 🏗 Third Parts
